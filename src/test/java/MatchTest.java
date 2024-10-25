@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.worldcupscoreboard.Match;
 import org.worldcupscoreboard.Team;
+import org.worldcupscoreboard.TeamSide;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,6 +74,32 @@ public class MatchTest {
             match.endMatch();
         } catch (IllegalStateException e) {
             assertEquals("Match already ended", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGoalScored() {
+        Team homeTeam = new Team("Brazil");
+        Team awayTeam = new Team("Germany");
+        Match match = new Match(homeTeam, awayTeam);
+
+        match.startMatch();
+        match.goalScored(TeamSide.HOME);
+        assertEquals(1, homeTeam.getScore());
+        assertEquals(0, awayTeam.getScore());
+
+        match.goalScored(TeamSide.AWAY);
+        assertEquals(1, homeTeam.getScore());
+        assertEquals(1, awayTeam.getScore());
+    }
+
+    @Test
+    public void testGoalScoredMatchNotRunning() {
+        Match match = new Match(new Team("Brazil"), new Team("Germany"));
+        try {
+            match.goalScored(TeamSide.HOME);
+        } catch (IllegalStateException e) {
+            assertEquals("Cannot add goal since match not running", e.getMessage());
         }
     }
 }

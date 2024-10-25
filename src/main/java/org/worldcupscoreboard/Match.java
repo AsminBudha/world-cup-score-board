@@ -45,6 +45,26 @@ public class Match {
         this.endTime = LocalDateTime.now();
     }
 
+    public void goalScored(TeamSide teamSide) {
+        if (!isGameRunning()) {
+            throw new IllegalStateException("Cannot add goal since match not running");
+        }
+
+        if (teamSide == TeamSide.HOME) {
+            homeTeam.addScore(1);
+        } else {
+            awayTeam.addScore(1);
+        }
+    }
+
+    public int totalScore() {
+        return homeTeam.getScore() + awayTeam.getScore();
+    }
+
+    public boolean isGameRunning() {
+        return startTime != null && endTime == null;
+    }
+
     private static void validateTeams(Team homeTeam, Team awayTeam) {
         if (homeTeam == null) {
             throw new IllegalArgumentException("homeTeam must not be null");

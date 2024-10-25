@@ -20,8 +20,4 @@ public class Team {
     public void addScore(int score) {
         this.score += score;
     }
-
-    public void resetScore() {
-        this.score = 0;
-    }
 }

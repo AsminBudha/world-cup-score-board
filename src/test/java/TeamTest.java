@@ -13,7 +13,5 @@ public class TeamTest {
         assertEquals(3, team.getScore());
         team.addScore(2);
         assertEquals(5, team.getScore());
-        team.resetScore();
-        assertEquals(0, team.getScore());
     }
 }
