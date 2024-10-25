@@ -31,4 +31,16 @@ public class MatchUtilTest {
         assertTrue(MatchUtil.listNotContains(matches, new Match(new Team("Brazil"), new Team("France"))));
         assertFalse(MatchUtil.listNotContains(matches, new Match(new Team("Brazil"), new Team("Argentina"))));
     }
+
+    @Test
+    public void  testListNotContainsMatchEmptyList() {
+        List<Match> matches = new ArrayList<>();
+
+        assertTrue(MatchUtil.listNotContains(matches, new Match(new Team("Brazil"), new Team("France"))));
+    }
+
+    @Test
+    public void  testListNotContainsMatchNullList() {
+        assertTrue(MatchUtil.listNotContains(null, new Match(new Team("Brazil"), new Team("France"))));
+    }
 }

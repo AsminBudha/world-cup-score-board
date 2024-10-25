@@ -22,4 +22,20 @@ public class ObjectUtilTest {
             assert e.getMessage().equals("Match must not be null");
         }
     }
+
+    @Test
+    public void testNotNullNotNull() {
+        ObjectUtil.notNull(new Object());
+    }
+
+    @Test
+    public void testNotNullNotNullWithMessage() {
+        ObjectUtil.notNull(new Object(), "Match must not be null");
+    }
+
+    @Test
+    public void testNotNullNotNullWithMessageNull() {
+        ObjectUtil.notNull(new Object(), null);
+    }
+
 }

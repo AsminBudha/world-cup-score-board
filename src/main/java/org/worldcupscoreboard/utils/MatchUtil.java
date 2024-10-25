@@ -7,6 +7,10 @@ import java.util.function.Predicate;
 
 public class MatchUtil {
     public static boolean listContains(List<Match> matches, Match match) {
+        if (matches == null || match == null) {
+            return false;
+        }
+
         Predicate<Match> isSameTeam = existingMatch -> existingMatch.isSameMatch(match);
 
         return matches.stream().anyMatch(isSameTeam);
