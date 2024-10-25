@@ -2,6 +2,7 @@ package org.worldcupscoreboard;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.worldcupscoreboard.utils.MatchUtil;
 import org.worldcupscoreboard.utils.ObjectUtil;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class ScoreBoard {
     private List<Match> matches;
 
     public ScoreBoard() {
-        this.matches = new ArrayList<>();
+        this(new ArrayList<>());
     }
 
     public ScoreBoard(List<Match> matches) {
@@ -34,7 +35,7 @@ public class ScoreBoard {
     public void addMatch(Match match) {
         ObjectUtil.notNull(match, "match must not be null");
 
-        if (this.contains(match)) {
+        if (MatchUtil.listContains(matches, match)) {
             logger.info("Match between {} and {} already added to the scoreboard", match.getHomeTeam().getName(), match.getAwayTeam().getName());
             return;
         }
@@ -51,7 +52,7 @@ public class ScoreBoard {
     public void startMatch(Match match) {
         ObjectUtil.notNull(match, "match must not be null");
 
-        if (!this.contains(match)) {
+        if (MatchUtil.listNotContains(matches, match)) {
             throw new IllegalArgumentException("Match not found in the scoreboard");
         }
 
@@ -69,7 +70,7 @@ public class ScoreBoard {
     public void endMatch(Match match) {
         ObjectUtil.notNull(match, "match must not be null");
 
-        if (!this.contains(match)) {
+        if (MatchUtil.listNotContains(matches, match)) {
             throw new IllegalArgumentException("Match not found in the scoreboard");
         }
         if (!match.isGameRunning()) {
@@ -80,13 +81,38 @@ public class ScoreBoard {
         matches.remove(match);
     }
 
-    private boolean contains(Match match) {
-        Predicate<Match> isSameTeam = existingMatch -> existingMatch.getHomeTeam().getName().equalsIgnoreCase(match.getHomeTeam().getName())
-                || existingMatch.getAwayTeam().getName().equals(match.getAwayTeam().getName());
-
-        return matches.stream().anyMatch(isSameTeam);
+    private void goal(Match match, TeamSide teamSide) {
+        match.goalScored(teamSide);
     }
 
+    public void goalScored(Match match, TeamSide teamSide) {
+        validateIfTeamNotExists(matches, match);
+        this.goal(match, teamSide);
+    }
+
+    public void goalScored(Match match, Team team) {
+        validateIfTeamNotExists(matches, match);
+        ObjectUtil.notNull(team, "team must not be null");
+
+        var teamSide = match.teamSide(team.getName());
+        this.goal(match, teamSide);
+    }
+
+    public void goalScored(Match match, String teamName) {
+        validateIfTeamNotExists(matches, match);
+        ObjectUtil.notNull(teamName, "teamName must not be null");
+
+        var teamSide = match.teamSide(teamName);
+        this.goal(match, teamSide);
+    }
+
+    private static void validateIfTeamNotExists(List<Match> matches, Match match) {
+        ObjectUtil.notNull(match, "match must not be null");
+
+        if (MatchUtil.listNotContains(matches, match)) {
+            throw new IllegalArgumentException("Match not found in the scoreboard");
+        }
+    }
 
     private static void validateIfTeamExistsInAnotherMatch(List<Match> matches, Match match) {
         Predicate<Match> isSameTeam = existingMatch -> existingMatch.getHomeTeam().getName().equalsIgnoreCase(match.getHomeTeam().getName())

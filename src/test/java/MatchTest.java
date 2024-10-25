@@ -102,4 +102,16 @@ public class MatchTest {
             assertEquals("Cannot add goal since match not running", e.getMessage());
         }
     }
+
+    @Test
+    public void testTeamSide() {
+        Match match = new Match(new Team("Brazil"), new Team("Germany"));
+        assertEquals(TeamSide.HOME, match.teamSide("Brazil"));
+        assertEquals(TeamSide.AWAY, match.teamSide("Germany"));
+        try {
+            match.teamSide("Argentina");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Team not found in the match", e.getMessage());
+        }
+    }
 }

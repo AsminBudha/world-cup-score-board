@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 import org.worldcupscoreboard.Match;
 import org.worldcupscoreboard.ScoreBoard;
 import org.worldcupscoreboard.Team;
+import org.worldcupscoreboard.TeamSide;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -91,7 +92,7 @@ public class ScoreBoardTest {
 
         // End a match not in the scoreboard
         try {
-            subject.endMatch(new Match(new Team("Brazil"), new Team("Germany")));
+            subject.endMatch(new Match(new Team("Brazil"), new Team("Argentina")));
         } catch (IllegalArgumentException e) {
             assertEquals("Match not found in the scoreboard", e.getMessage());
         }
@@ -146,5 +147,34 @@ public class ScoreBoardTest {
         } catch (IllegalArgumentException e) {
             assertEquals("Match not found in the scoreboard", e.getMessage());
         }
+    }
+
+    @Test
+    public void testScoreBoardGoalScored() {
+        var subject = new ScoreBoard();
+        assertNotNull(subject.getMatches());
+
+        // Add a match
+        Match match = new Match(new Team("Brazil"), new Team("Germany"));
+        subject.addMatch(match);
+
+        subject.startMatch(match);
+
+        // Goal scored
+        subject.goalScored(match, TeamSide.HOME);
+        assertEquals(1, subject.getMatches().get(0).totalScore());
+
+        subject.goalScored(match, TeamSide.AWAY);
+        assertEquals(2, subject.getMatches().get(0).totalScore());
+
+        subject.goalScored(match, new Team("Brazil"));
+        assertEquals(3, subject.getMatches().get(0).totalScore());
+
+        subject.goalScored(match, new Team("Germany"));
+        assertEquals(4, subject.getMatches().get(0).totalScore());
+
+        subject.goalScored(match, "Brazil");
+        assertEquals(5, subject.getMatches().get(0).totalScore());
+
     }
 }

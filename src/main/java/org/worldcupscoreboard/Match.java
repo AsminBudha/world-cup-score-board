@@ -71,6 +71,16 @@ public class Match {
         return startTime != null && endTime == null;
     }
 
+    public TeamSide teamSide(String teamName) {
+        if (teamName.equalsIgnoreCase(homeTeam.getName())) {
+            return TeamSide.HOME;
+        } else if (teamName.equalsIgnoreCase(awayTeam.getName())) {
+            return TeamSide.AWAY;
+        } else {
+            throw new IllegalArgumentException("Team not found in the match");
+        }
+    }
+
     private static void validateTeams(Team homeTeam, Team awayTeam) {
         if (homeTeam == null) {
             throw new IllegalArgumentException("homeTeam must not be null");
