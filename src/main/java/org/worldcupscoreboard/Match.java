@@ -1,8 +1,14 @@
 package org.worldcupscoreboard;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Match {
+    private static final Logger logger = LoggerFactory.getLogger(Match.class);
+
     private final Team homeTeam;
     private final Team awayTeam;
     private LocalDateTime startTime;
@@ -75,5 +81,18 @@ public class Match {
         if (homeTeam.getName().equalsIgnoreCase(awayTeam.getName())) {
             throw new IllegalArgumentException("Teams must not be the same");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Match match = (Match) o;
+        return Objects.equals(homeTeam, match.homeTeam) && Objects.equals(awayTeam, match.awayTeam) && Objects.equals(startTime, match.startTime) && Objects.equals(endTime, match.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(homeTeam, awayTeam, startTime, endTime);
     }
 }
