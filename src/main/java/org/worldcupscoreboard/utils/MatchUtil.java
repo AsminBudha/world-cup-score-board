@@ -7,8 +7,7 @@ import java.util.function.Predicate;
 
 public class MatchUtil {
     public static boolean listContains(List<Match> matches, Match match) {
-        Predicate<Match> isSameTeam = existingMatch -> existingMatch.getHomeTeam().getName().equalsIgnoreCase(match.getHomeTeam().getName())
-                && existingMatch.getAwayTeam().getName().equalsIgnoreCase(match.getAwayTeam().getName());
+        Predicate<Match> isSameTeam = existingMatch -> existingMatch.isSameMatch(match);
 
         return matches.stream().anyMatch(isSameTeam);
     }

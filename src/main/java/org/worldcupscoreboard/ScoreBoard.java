@@ -6,8 +6,11 @@ import org.worldcupscoreboard.utils.MatchUtil;
 import org.worldcupscoreboard.utils.ObjectUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 public class ScoreBoard {
@@ -78,7 +81,7 @@ public class ScoreBoard {
         }
 
         match.endMatch();
-        matches.remove(match);
+        matches.removeIf(existingMatch -> existingMatch.isSameMatch(match));
     }
 
     private void goal(Match match, TeamSide teamSide) {
@@ -91,11 +94,8 @@ public class ScoreBoard {
     }
 
     public void goalScored(Match match, Team team) {
-        validateIfTeamNotExists(matches, match);
         ObjectUtil.notNull(team, "team must not be null");
-
-        var teamSide = match.teamSide(team.getName());
-        this.goal(match, teamSide);
+        this.goalScored(match, team.getName());
     }
 
     public void goalScored(Match match, String teamName) {
@@ -104,6 +104,27 @@ public class ScoreBoard {
 
         var teamSide = match.teamSide(teamName);
         this.goal(match, teamSide);
+    }
+
+    public List<Match> leaderBoard() {
+        Comparator<Match> comparator = (m1, m2) -> {
+            int diff = m2.totalScore() - m1.totalScore();
+            if (diff != 0) {
+                return diff;
+            }
+            return m2.getStartTime().compareTo(m1.getStartTime());
+        };
+
+        return getMatches(comparator);
+    }
+
+    public List<Match> getMatches(Comparator<Match> comparator) {
+        if (comparator == null) {
+            return matches;
+        }
+        return matches.stream()
+                .sorted(comparator)
+                .collect(Collectors.toList());
     }
 
     private static void validateIfTeamNotExists(List<Match> matches, Match match) {

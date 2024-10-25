@@ -4,8 +4,10 @@ import org.worldcupscoreboard.Team;
 import org.worldcupscoreboard.TeamSide;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MatchTest {
     @Test
@@ -113,5 +115,20 @@ public class MatchTest {
         } catch (IllegalArgumentException e) {
             assertEquals("Team not found in the match", e.getMessage());
         }
+    }
+
+    @Test
+    public void testIsSame() {
+        Team homeTeam = new Team("Brazil");
+        Team awayTeam = new Team("Germany");
+        Match match = new Match(homeTeam, awayTeam);
+        Match match2 = new Match(homeTeam, awayTeam);
+        assertTrue(match.isSameMatch(match2));
+
+        Match match3 = new Match(new Team("Brazil"), new Team("Germany"));
+        assertTrue(match.isSameMatch(match3));
+
+        Match match4 = new Match(new Team("Brazil"), new Team("Argentina"));
+        assertFalse(match.isSameMatch(match4));
     }
 }

@@ -81,6 +81,11 @@ public class Match {
         }
     }
 
+    public boolean isSameMatch(Match match) {
+        return homeTeam.getName().equalsIgnoreCase(match.getHomeTeam().getName())
+                && awayTeam.getName().equalsIgnoreCase(match.getAwayTeam().getName());
+    }
+
     private static void validateTeams(Team homeTeam, Team awayTeam) {
         if (homeTeam == null) {
             throw new IllegalArgumentException("homeTeam must not be null");
@@ -93,16 +98,4 @@ public class Match {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Match match = (Match) o;
-        return Objects.equals(homeTeam, match.homeTeam) && Objects.equals(awayTeam, match.awayTeam) && Objects.equals(startTime, match.startTime) && Objects.equals(endTime, match.endTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(homeTeam, awayTeam, startTime, endTime);
-    }
 }
